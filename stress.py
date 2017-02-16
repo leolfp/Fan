@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import RPi.GPIO as GPIO
-import os
+import subprocess
 import time
 
 channel=18 #PWM BCM channel
@@ -31,7 +31,7 @@ time.sleep(120)
 max = 100
 min = 10
 step = 10
-temp = lastTemp = getCPUtemp()
+temp = getCPUtemp()
 
 try:
     for dc in range(max, min, -step):
@@ -40,14 +40,13 @@ try:
         tm = 0
 
         # run bench in background
-        os.popen('sysbench --num-threads=4 --max-requests=30000 --test=cpu run >/dev/null 2>&1')
+        subprocess.popen('sysbench --num-threads=4 --max-requests=30000 --test=cpu run >/dev/null 2>&1')
 
-        while temp >= lastTemp:
+        while tm <= 60 * 3:
             time.sleep(1)
             log(dc,tm,temp,'warm')
 
             tm += 1
-            lastTemp = temp
             temp = getCPUtemp()
 
         print '  warm in ' + str(tm) + 'seconds'
@@ -58,7 +57,6 @@ try:
             log(dc,tm,temp,'cool')
 
             tm += 1
-            lastTemp = temp
             temp = getCPUtemp()
 
         print '  cool in ' + str(tm) + 'seconds'
