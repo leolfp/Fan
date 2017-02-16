@@ -24,7 +24,7 @@ def log(speed,time,temp,state):
 f = open('log.csv', 'w')
 f.write('speed,time,temp,state\n')
 
-print '3 min cooldown'
+print '2 min cooldown'
 p.start(100)
 time.sleep(120)
 
