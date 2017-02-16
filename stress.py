@@ -56,7 +56,7 @@ try:
             tm += 1
             temp = getCPUtemp()
 
-        print '  warm in ' + str(tm) + 'seconds'
+        print '  warm in ' + str(tm) + ' seconds'
         limit = tm + 60 * 5
 
         print '  cool started'
@@ -68,7 +68,7 @@ try:
             tm += 1
             temp = getCPUtemp()
 
-        print '  cool in ' + str(tm) + 'seconds'
+        print '  cool in ' + str(tm) + ' seconds'
 
 
 except KeyboardInterrupt:
