@@ -26,7 +26,7 @@ f.write('speed,time,temp,state\n')
 
 print '2 min cooldown'
 p.start(100)
-time.sleep(120)
+#time.sleep(120)
 
 max = 100
 min = 10
@@ -41,7 +41,7 @@ try:
 
         # run bench in background
         print '  sysbench started'
-        bench = subprocess.Popen(['sysbench', '--num-threads=4', '--max-requests=30000', '--test=cpu', 'run', '>/dev/null', '2>&1'])
+        bench = subprocess.Popen(['sysbench', '--num-threads=4', '--max-requests=30000', '--test=cpu', 'run'])
 
         print '  warm started'
         while bench.poll() == None:
