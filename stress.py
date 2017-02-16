@@ -77,3 +77,4 @@ except KeyboardInterrupt:
 p.stop()
 GPIO.cleanup()
 f.close()
+FNULL.close()
