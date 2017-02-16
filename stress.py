@@ -35,7 +35,7 @@ temp = lastTemp = getCPUtemp()
 
 try:
     for dc in range(max, min, -step):
-        print 'Test ' + dc + '%:'
+        print 'Test ' + str(dc) + '%:'
         p.ChangeDutyCycle(dc)
         tm = 0
 
@@ -50,7 +50,7 @@ try:
             lastTemp = temp
             temp = getCPUtemp()
 
-        print '  warm in ' + tm + 'seconds'
+        print '  warm in ' + str(tm) + 'seconds'
         limit = tm + 60 * 5
 
         while tm <= limit:
@@ -61,7 +61,7 @@ try:
             lastTemp = temp
             temp = getCPUtemp()
 
-        print '  cool in ' + tm + 'seconds'
+        print '  cool in ' + str(tm) + 'seconds'
 
 
 except KeyboardInterrupt:
