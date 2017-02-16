@@ -2,7 +2,6 @@
 
 import RPi.GPIO as GPIO
 import time
-import os
 
 # Return CPU temperature as float
 def getCPUtemp():
@@ -44,14 +43,14 @@ try:
         if dc > 0.0 and lastdc == 0.0:
             p.ChangeDutyCycle(100)
             time.sleep(0.2)
-	logFanSpeed(dc,CPU_temp)
-	if dc > lastdc:
-		newdc = dc
-	else:
-		newdc = lastdc * (1-alpha) + dc * alpha
-        p.ChangeDutyCycle(newdc)
-        lastdc = newdc
-        time.sleep(2)
+        logFanSpeed(dc,CPU_temp)
+        if dc > lastdc:
+            newdc = dc
+        else:
+            newdc = lastdc * (1-alpha) + dc * alpha
+            p.ChangeDutyCycle(newdc)
+            lastdc = newdc
+            time.sleep(2)
 
 except KeyboardInterrupt:
     pass
