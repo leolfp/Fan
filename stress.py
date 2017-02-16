@@ -26,18 +26,18 @@ FNULL = open('/dev/null', 'wb')
 f = open('log.csv', 'w')
 f.write('speed,time,temp,state\n')
 
-print '2 min cooldown'
-p.start(100)
-time.sleep(120)
-
 max = 100
-min = 10
+min = 0
 step = 10
 temp = getCPUtemp()
 
 try:
     for dc in range(max, min, -step):
         print 'Test ' + str(dc) + '%:'
+        print '  2 min cooldown'
+        p.start(100)
+        time.sleep(120)
+
         p.ChangeDutyCycle(dc)
         tm = 0
 
