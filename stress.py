@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import RPi.GPIO as GPIO
+import os
 import subprocess
 import time
 
@@ -21,6 +22,7 @@ def getCPUtemp():
 def log(speed,time,temp,state):
     f.write(str(speed) + ',' + str(time) + ',' + str(int(temp)) + '.' + str(int(temp*10)%10) + ',' + state + '\n')
 
+FNULL = open('/dev/null', 'w')
 f = open('log.csv', 'w')
 f.write('speed,time,temp,state\n')
 
@@ -41,7 +43,7 @@ try:
 
         # run bench in background
         print '  sysbench started'
-        bench = subprocess.Popen(['sysbench', '--num-threads=4', '--max-requests=30000', '--test=cpu', 'run'])
+        bench = subprocess.Popen('sysbench --num-threads=4 --max-requests=30000 --test=cpu run', stdout=FNULL, stderr=subprocess.STDOUT)
 
         print '  warm started'
         while bench.poll() == None:
