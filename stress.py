@@ -26,7 +26,7 @@ f.write('speed,time,temp,state\n')
 
 print '3 min cooldown'
 p.start(100)
-time.sleep(180)
+time.sleep(120)
 
 max = 100
 min = 10
