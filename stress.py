@@ -40,8 +40,10 @@ try:
         tm = 0
 
         # run bench in background
-        subprocess.popen('sysbench --num-threads=4 --max-requests=30000 --test=cpu run >/dev/null 2>&1')
+        subprocess.Popen(['sysbench', '--num-threads=4', '--max-requests=30000', '--test=cpu', 'run', '>/dev/null', '2>&1'])
+        print '  sysbench started'
 
+        print '  warm started'
         while tm <= 60 * 3:
             time.sleep(1)
             log(dc,tm,temp,'warm')
@@ -51,6 +53,8 @@ try:
 
         print '  warm in ' + str(tm) + 'seconds'
         limit = tm + 60 * 5
+
+        print '  cool started'
 
         while tm <= limit:
             time.sleep(1)
