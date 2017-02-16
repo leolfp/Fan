@@ -37,16 +37,16 @@ try:
     for dc in range(max, min, -step):
         print 'Test ' + str(dc) + '%:'
 
-        print '  2 min cooldown'
+        print '  3 min cooldown'
         p.ChangeDutyCycle(100)
-        time.sleep(120)
+        time.sleep(180)
 
         p.ChangeDutyCycle(dc)
         tm = 0
 
         # run bench in background
         print '  sysbench started'
-        bench = subprocess.Popen(['sysbench', '--num-threads=4', '--max-requests=30000', '--test=cpu', 'run'], stdout=FNULL, stderr=subprocess.STDOUT)
+        bench = subprocess.Popen(['sysbench', '--num-threads=4', '--max-requests=50000', '--test=cpu', 'run'], stdout=FNULL, stderr=subprocess.STDOUT)
 
         print '  warm started'
         while bench.poll() == None:
@@ -57,7 +57,7 @@ try:
             temp = getCPUtemp()
 
         print '  warm in ' + str(tm) + 'seconds'
-        limit = tm + 60 * 3
+        limit = tm + 60 * 5
 
         print '  cool started'
 
