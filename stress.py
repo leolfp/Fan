@@ -21,11 +21,12 @@ def getCPUtemp():
 def log(speed,time,temp,state):
     f.write(str(speed) + ',' + str(time) + ',' + str(int(temp)) + '.' + str(int(temp*10)%10) + ',' + state + '\n')
 
-p.start(100)
-time.sleep(180) # 3 min cool down
-
 f = open('log.csv', 'w')
 f.write('speed,time,temp,state\n')
+
+print '3 min cooldown'
+p.start(100)
+time.sleep(180)
 
 max = 100
 min = 10
@@ -34,6 +35,7 @@ temp = lastTemp = getCPUtemp()
 
 try:
     for dc in range(max, min, -step):
+        print 'Test ' + dc + '%:'
         p.ChangeDutyCycle(dc)
         tm = 0
 
@@ -48,6 +50,7 @@ try:
             lastTemp = temp
             temp = getCPUtemp()
 
+        print '  warm in ' + tm + 'seconds'
         limit = tm + 60 * 5
 
         while tm <= limit:
@@ -57,6 +60,9 @@ try:
             tm += 1
             lastTemp = temp
             temp = getCPUtemp()
+
+        print '  cool in ' + tm + 'seconds'
+
 
 except KeyboardInterrupt:
     pass
