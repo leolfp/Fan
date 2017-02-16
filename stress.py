@@ -31,11 +31,14 @@ min = 0
 step = 10
 temp = getCPUtemp()
 
+p.start(100)
+
 try:
     for dc in range(max, min, -step):
         print 'Test ' + str(dc) + '%:'
+
         print '  2 min cooldown'
-        p.start(100)
+        p.ChangeDutyCycle(100)
         time.sleep(120)
 
         p.ChangeDutyCycle(dc)
