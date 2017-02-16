@@ -43,7 +43,7 @@ try:
 
         # run bench in background
         print '  sysbench started'
-        bench = subprocess.Popen('sysbench --num-threads=4 --max-requests=30000 --test=cpu run', stdout=FNULL, stderr=FNULL)
+        bench = subprocess.Popen(['sysbench', '--num-threads=4', '--max-requests=30000', '--test=cpu', 'run'], stdout=FNULL, stderr=FNULL)
 
         print '  warm started'
         while bench.poll() == None:
