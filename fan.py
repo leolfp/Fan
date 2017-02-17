@@ -32,7 +32,7 @@ lastTemp = 0.0
 sampling = 4
 threshold = sampling - 1
 
-state = 'warm'
+state = 'idle'
 # dx has a circular list of the last derivatives signs
 dx = [0] * sampling
 # trend accumulates the signs
@@ -51,24 +51,26 @@ try:
         trend += dx[i]
 
         # state transition
-        if state == 'warm':
-            if trend <= -threshold:
-                state = 'cool'
-        else:
+        if state != 'warm':
             if trend >= threshold:
                 state = 'warm'
+        else:
+            if trend <= -threshold:
+                state = 'cool'
 
         if state == 'warm':
             speed = (temp - 50.0) * 2.0 + speed_min
             # speed[temp] = {50: 30, 55: 40, 60: 50, ...}
-        else:
+        elif state == 'cool':
             speed = (temp - 46.0) * 0.69 + speed_min
             # speed[temp] = {75: 50, 46: 30, ...}
+        else:
+            speed = 0.0
 
         if speed < speed_min:
             speed = 0.0
             if state == 'cool':
-                state = 'warm'
+                state = 'idle'
         elif speed > speed_max:
             speed = speed_max
 
