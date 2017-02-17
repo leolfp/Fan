@@ -62,8 +62,8 @@ try:
             speed = (temp - 50.0) * 2.0 + speed_min
             # speed[temp] = {50: 30, 55: 40, 60: 50, ...}
         else:
-            speed = (temp - 42.0) * 0.6 + speed_min
-            # speed[temp] = {75: 50, 42: 30, ...}
+            speed = (temp - 46.0) * 0.69 + speed_min
+            # speed[temp] = {75: 50, 46: 30, ...}
 
         if speed < speed_min:
             speed = 0.0
