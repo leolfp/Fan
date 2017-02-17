@@ -11,10 +11,11 @@ def getCPUtemp():
     return float(temp) / 1000.0
 
 # Log Fan speed
-def logFanSpeed(speed,temp):
+def logFanSpeed(speed, temp, state):
     f = open('/var/log/fan', 'w')
     f.write('speed=' + str(int(speed)) + '%\n')
     f.write('temp=' + str(int(temp)) + '.' + str(int(temp*10)%10) + ' C\n')
+    f.write('state=' + state + '\n')
     f.close()
 
 channel=18 #PWM BCM channel
@@ -25,32 +26,56 @@ GPIO.setup(channel,GPIO.OUT)
 p=GPIO.PWM(channel,100) #frequency
 p.start(0)
 
-sup=75.0
-inf=35.0
-min=30.0
-max=100.0
-lastdc=0.0
-alpha=0.2
+temp = 0.0
+lastTemp = 0.0
+
+state = 'warm'
+# dx has a circular list of the last derivatives signs
+dx = []
+# trend accumulates the signs
+trend = 0
+
+sampling = 4
+threshold = sampling - 1
+
+speed_min = 30.0
+speed_max = 100.0
 
 try:
+    i = 0
     while True:
+        temp = getCPUtemp()
 
-        CPU_temp = getCPUtemp()
-        dc = (CPU_temp - inf)/(sup-inf)*max
-        if dc <= 0: dc = 0.0
-        if dc >= max: dc = max
-        if dc < min: dc = 0.0
-        if dc > 0.0 and lastdc == 0.0:
-            p.ChangeDutyCycle(100)
-            time.sleep(0.2)
-        logFanSpeed(dc,CPU_temp)
-        if dc > lastdc:
-            newdc = dc
+        trend -= dx[i]
+        dx[i] = cmp(temp - lastTemp, 0)
+        trend += dx[i]
+
+        # state transition
+        if state == 'warm':
+            if trend <= -threshold:
+                state = 'cool'
         else:
-            newdc = lastdc * (1-alpha) + dc * alpha
-        p.ChangeDutyCycle(newdc)
-        lastdc = newdc
-        time.sleep(2)
+            if trend >= threshold:
+                state = 'warm'
+
+        if state == 'warm':
+            speed = (temp - 50.0) * 2.0 + speed_min
+            # speed[temp] = {50: 30, 55: 40, 60: 50, ...}
+        else:
+            speed = (temp - 42.0) * 0.6 + speed_min
+            # speed[temp] = {75: 50, 42: 30, ...}
+
+        if speed < speed_min:
+            speed = 0.0
+        elif speed > speed_max:
+            speed = speed_max
+
+        p.ChangeDutyCycle(speed)
+        logFanSpeed(speed, temp, state)
+
+        lastTemp = temp
+        i = (i + 1) % sampling
+        time.sleep(1)
 
 except KeyboardInterrupt:
     pass
