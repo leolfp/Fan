@@ -67,6 +67,8 @@ try:
 
         if speed < speed_min:
             speed = 0.0
+            if state == 'cool':
+                state = 'warm'
         elif speed > speed_max:
             speed = speed_max
 
