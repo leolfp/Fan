@@ -69,8 +69,7 @@ try:
 
         if speed < speed_min:
             speed = 0.0
-            if state == 'cool':
-                state = 'idle'
+            state = 'idle'
         elif speed > speed_max:
             speed = speed_max
 
