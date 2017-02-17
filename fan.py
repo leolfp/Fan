@@ -48,9 +48,9 @@ try:
             newdc = dc
         else:
             newdc = lastdc * (1-alpha) + dc * alpha
-            p.ChangeDutyCycle(newdc)
-            lastdc = newdc
-            time.sleep(2)
+        p.ChangeDutyCycle(newdc)
+        lastdc = newdc
+        time.sleep(2)
 
 except KeyboardInterrupt:
     pass
