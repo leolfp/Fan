@@ -29,14 +29,14 @@ p.start(0)
 temp = 0.0
 lastTemp = 0.0
 
-state = 'warm'
-# dx has a circular list of the last derivatives signs
-dx = []
-# trend accumulates the signs
-trend = 0
-
 sampling = 4
 threshold = sampling - 1
+
+state = 'warm'
+# dx has a circular list of the last derivatives signs
+dx = [0] * sampling
+# trend accumulates the signs
+trend = 0
 
 speed_min = 30.0
 speed_max = 100.0
