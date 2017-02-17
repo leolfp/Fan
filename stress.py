@@ -37,9 +37,9 @@ try:
     for dc in range(max, min, -step):
         print 'Test ' + str(dc) + '%:'
 
-        print '  3 min cooldown'
+        print '  4 min cooldown'
         p.ChangeDutyCycle(100)
-        time.sleep(180)
+        time.sleep(240)
 
         p.ChangeDutyCycle(dc)
         tm = 0
