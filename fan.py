@@ -26,8 +26,8 @@ p=GPIO.PWM(channel,100) #frequency
 p.start(0)
 
 sup=75.0
-inf=45.0
-min=20.0
+inf=35.0
+min=30.0
 max=100.0
 lastdc=0.0
 alpha=0.2
