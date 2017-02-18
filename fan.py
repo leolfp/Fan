@@ -3,14 +3,14 @@
 import RPi.GPIO as GPIO
 import time
 
-# Return CPU temperature as float
+# Return CPU temperature in Celsius as float
 def getCPUtemp():
     f = open('/sys/class/thermal/thermal_zone0/temp', 'r')
     temp = f.readline()
     f.close()
     return float(temp) / 1000.0
 
-# Log Fan speed
+# Log Fan speed, temperature and state
 def logFanSpeed(speed, temp, state):
     f = open('/var/log/fan', 'w')
     f.write('speed=' + str(int(speed)) + '%\n')
@@ -18,14 +18,16 @@ def logFanSpeed(speed, temp, state):
     f.write('state=' + state + '\n')
     f.close()
 
-channel=18 #PWM BCM channel
+channel=18  # PWM BCM channel
 
+# Starting the PWM
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(channel,GPIO.OUT)
-p=GPIO.PWM(channel,100) #frequency
+p=GPIO.PWM(channel,100)  # frequency
 p.start(0)
 
+# Temperatures in Celsius
 temp = 0.0
 lastTemp = 0.0
 
@@ -33,15 +35,19 @@ lastTemp = 0.0
 sampling = 4
 threshold = sampling - 1
 
+# Initial state
 state = 'idle'
+
 # dx has a circular list of the last derivatives signs
 dx = [0] * sampling
 # trend accumulates the signs
 trend = 0
 
+# Speed limits
 speed_min = 30.0
 speed_max = 100.0
 
+# Temp thresholds - must be a configuration
 temp_down = 42.0
 temp_up = 50.0
 
@@ -50,6 +56,7 @@ try:
     while True:
         temp = getCPUtemp()
 
+        # Calculating trend
         trend -= dx[i]
         dx[i] = cmp(temp - lastTemp, 0)
         trend += dx[i]
@@ -60,27 +67,29 @@ try:
                 state = 'warm'
             elif state == 'idle' and temp > temp_up:
                 state = 'cool'
-            elif temp < temp_down:
+            elif temp < temp_down:  # and state == 'cool'
                 state = 'idle'
-        else:  # state == warm
+        else:  # state == 'warm'
             if trend <= -threshold:
                 state = 'cool'
 
+        # Temperature calculation - two linear formulas that optimizes noise and efficacy
         if state == 'warm':
             speed = (temp - temp_up) * 2.0 + speed_min
             # speed[temp] = {50: 30, 55: 40, 60: 50, ...}
         elif state == 'cool':
             speed = (temp - temp_down) * 0.6 + speed_min
             # speed[temp] = {75: 50, 42: 30, ...}
-        else:
+        else:  # state == 'idle'
             speed = 0.0
 
+        # Adjusting speed out of limits
         if speed < speed_min:
             speed = 0.0
         elif speed > speed_max:
             speed = speed_max
-
         p.ChangeDutyCycle(speed)
+
         logFanSpeed(speed, temp, state)
 
         lastTemp = temp
