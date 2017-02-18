@@ -75,13 +75,13 @@ try:
         trend += dx[i]
 
         # state transition
+        if temp < temp_down:
+            state = 'idle'
         if state != 'warm':
             if trend >= threshold:
                 state = 'warm'
             elif state == 'idle' and temp > temp_up:
                 state = 'cool'
-            elif temp < temp_down:  # and state == 'cool'
-                state = 'idle'
         else:  # state == 'warm'
             if trend <= -threshold:
                 state = 'cool'
