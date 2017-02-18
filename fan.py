@@ -29,6 +29,7 @@ p.start(0)
 temp = 0.0
 lastTemp = 0.0
 
+# Number of measures to consider - analysis shows that 4 is optimal
 sampling = 4
 threshold = sampling - 1
 
@@ -59,7 +60,9 @@ try:
                 state = 'warm'
             elif state == 'idle' and temp > temp_up:
                 state = 'cool'
-        else:
+            elif temp < temp_down:
+                state = 'idle'
+        else:  # state == warm
             if trend <= -threshold:
                 state = 'cool'
 
@@ -74,7 +77,6 @@ try:
 
         if speed < speed_min:
             speed = 0.0
-            state = 'idle'
         elif speed > speed_max:
             speed = speed_max
 
