@@ -11,7 +11,7 @@ def getCPUtemp():
     return float(temp) / 1000.0
 
 # Opens historical log
-csv = open('/var/log/fan.csv', 'w')
+csv = open('/var/log/fan.csv', 'w', 1)
 csv.write('speed,time,temp,state\n')
 
 # Log Fan speed, temperature and state
