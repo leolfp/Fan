@@ -10,13 +10,25 @@ def getCPUtemp():
     f.close()
     return float(temp) / 1000.0
 
+# Opens historical log
+csv = open('/var/log/fan.csv', 'w')
+csv.write('speed,time,temp,state\n')
+
 # Log Fan speed, temperature and state
-def logFanSpeed(speed, temp, state):
+def logFanSpeed(speed, time, temp, state):
+    speed_s = str(int(speed))
+    temp_s = str(int(temp)) + '.' + str(int(temp*10)%10)
+
+    # Snapshot of current state
     f = open('/var/log/fan', 'w')
-    f.write('speed=' + str(int(speed)) + '%\n')
-    f.write('temp=' + str(int(temp)) + '.' + str(int(temp*10)%10) + ' C\n')
+    f.write('speed=' + speed_s + '%\n')
+    f.write('temp=' + temp_s + ' C\n')
     f.write('state=' + state + '\n')
     f.close()
+
+    # Historical log
+    csv.write(speed_s + ',' + str(time) + ',' + temp_s + ',' + state + '\n')
+
 
 channel=18  # PWM BCM channel
 
@@ -53,6 +65,7 @@ temp_up = 50.0
 
 try:
     i = 0
+    tm = 0
     while True:
         temp = getCPUtemp()
 
@@ -90,10 +103,11 @@ try:
             speed = speed_max
         p.ChangeDutyCycle(speed)
 
-        logFanSpeed(speed, temp, state)
+        logFanSpeed(speed, tm, temp, state)
 
         lastTemp = temp
         i = (i + 1) % sampling
+        tm += 1
         time.sleep(1)
 
 except KeyboardInterrupt:
