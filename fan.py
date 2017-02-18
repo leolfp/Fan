@@ -15,7 +15,7 @@ csv = open('/var/log/fan.csv', 'w')
 csv.write('speed,time,temp,state\n')
 
 # Log Fan speed, temperature and state
-def logFanSpeed(speed, time, temp, state):
+def logFanSpeed(time, speed, temp, state):
     speed_s = str(int(speed))
     temp_s = str(int(temp)) + '.' + str(int(temp*10)%10)
 
@@ -27,7 +27,7 @@ def logFanSpeed(speed, time, temp, state):
     f.close()
 
     # Historical log
-    csv.write(speed_s + ',' + str(time) + ',' + temp_s + ',' + state + '\n')
+    csv.write(str(time) + ',' + speed_s + ',' + temp_s + ',' + state + '\n')
 
 
 channel=18  # PWM BCM channel
@@ -103,7 +103,7 @@ try:
             speed = speed_max
         p.ChangeDutyCycle(speed)
 
-        logFanSpeed(speed, tm, temp, state)
+        logFanSpeed(tm, speed, temp, state)
 
         lastTemp = temp
         i = (i + 1) % sampling
