@@ -115,3 +115,4 @@ except KeyboardInterrupt:
 
 p.stop()
 GPIO.cleanup()
+csv.close()
