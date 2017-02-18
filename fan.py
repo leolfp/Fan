@@ -42,7 +42,7 @@ trend = 0
 speed_min = 30.0
 speed_max = 100.0
 
-temp_down = 46.0
+temp_down = 42.0
 temp_up = 50.0
 
 try:
@@ -70,8 +70,8 @@ try:
             speed = (temp - temp_up) * 2.0 + speed_min
             # speed[temp] = {50: 30, 55: 40, 60: 50, ...}
         elif state == 'cool':
-            speed = (temp - temp_down) * 0.69 + speed_min
-            # speed[temp] = {75: 50, 46: 30, ...}
+            speed = (temp - temp_down) * 0.6 + speed_min
+            # speed[temp] = {75: 50, 42: 30, ...}
         else:
             speed = 0.0
 
